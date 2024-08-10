@@ -1,0 +1,16 @@
+[package]
+name = "gpu-code"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+block = "0.1.6"
+dispatch = "0.2.0"
+metal = "0.29.0"
+objc = "0.2.7"
+
+
+[features]
+dispatch= [
+    "metal/dispatch",
+]
