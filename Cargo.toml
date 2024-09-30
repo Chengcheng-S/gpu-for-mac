@@ -14,3 +14,4 @@ objc = "0.2.7"
 gpu= [
     "metal/dispatch",
 ]
+private=["metal/private"]

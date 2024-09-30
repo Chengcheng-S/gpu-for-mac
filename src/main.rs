@@ -1,6 +1,8 @@
-use gpu_for_mac::compute_argument_buffer::*;
+use gpu_for_mac::{compute_argument_buffer::*,embedded_lib::embedded};
 
-// use objc::rc::autoreleasepool;
 fn main() {
+    caps();
+    embedded();
     buffers();
+    bind();
 }

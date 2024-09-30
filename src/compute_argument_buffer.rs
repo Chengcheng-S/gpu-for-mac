@@ -2,11 +2,11 @@ use metal::*;
 use objc::rc::autoreleasepool;
 use std::mem;
 
-static LIBRARY_SRC: &str = include_str!("compute-argument-buffer.metal");
+static LIBRARY_SRC: &str = include_str!("../build_miden/compute_argument_buffer/compute-argument-buffer.metal");
 
 pub fn buffers() {
     autoreleasepool(|| {
-        println!("start =======> ");
+        println!("start buffers =======> ");
         let device = Device::system_default().expect("no device found");
         let command_queue = device.new_command_queue();
 
@@ -87,5 +87,64 @@ pub fn buffers() {
         unsafe {
             assert_eq!(465, *ptr);
         }
+    });
+}
+
+pub fn bind(){
+    autoreleasepool(||{
+        println!("start binding =======> ");
+        let device = Device::system_default().expect("no device found");
+
+        let buffer = device.new_buffer(4, MTLResourceOptions::empty());
+        let sampler = {
+            let descriptor = SamplerDescriptor::new();
+            device.new_sampler(&descriptor)
+        };
+
+        let queue = device.new_command_queue();
+        let cmd_buf = queue.new_command_buffer();
+
+        let encoder = cmd_buf.new_compute_command_encoder();
+
+        encoder.set_buffers(2, &[Some(&buffer), None], &[4, 0]);
+        encoder.set_sampler_states(1, &[Some(&sampler), None]);
+
+        encoder.end_encoding();
+        cmd_buf.commit();
+
+        println!("Everything is bound");
+    });
+}
+
+
+pub fn caps(){
+    autoreleasepool(||{
+        println!("start caps =======> ");
+        let device = Device::system_default().expect("no device found");
+
+        #[cfg(feature = "private")]
+        {
+            println!("Vendor: {:?}", unsafe { device.vendor() });
+            println!("Family: {:?}", unsafe { device.family_name() });
+        }
+
+        println!(
+            "Max threads per threadgroup: {:?}",
+            device.max_threads_per_threadgroup()
+        );
+
+        #[cfg(target_os = "macos")]
+        {
+            println!("Integrated GPU: {:?}", device.is_low_power());
+            println!("Headless: {:?}", device.is_headless());
+            println!("D24S8: {:?}", device.d24_s8_supported());
+            println!("Supports dynamic libraries: {:?}", device.supports_dynamic_libraries());
+        }
+        println!("maxBufferLength: {} Mb", device.max_buffer_length() >> 20);
+        println!(
+            "Indirect argument buffer: {:?}",
+            device.argument_buffers_support()
+        );
+        
     });
 }

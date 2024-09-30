@@ -2,8 +2,7 @@ use dispatch::{Queue, QueueAttribute};
 use metal::*;
 
 #[cfg(feature="gpu")]
-pub fn notification(){
-
+pub fn notifications(){
     let device = Device::system_default().expect("No device found");
 
     let command_queue = device.new_command_queue();
