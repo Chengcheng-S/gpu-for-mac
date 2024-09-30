@@ -2,7 +2,7 @@ use metal::*;
 use objc::rc::autoreleasepool;
 
 pub fn embedded() {
-    let library_data = include_bytes!("shaders.metallib");
+    let library_data = include_bytes!("../build_miden/shader/shaders.metallib");
 
     autoreleasepool(|| {
         let device = Device::system_default().expect("no device found");
